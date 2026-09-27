@@ -1,0 +1,17 @@
+{
+  "name": "klaro-photobooth",
+  "version": "1.0.0",
+  "description": "Premium photobooth web application",
+  "type": "module",
+  "scripts": {
+    "dev": "npx http-server -p 8080 -c-1 -o",
+    "server": "npx http-server -p 8080 -c-1"
+  },
+  "keywords": [
+    "photobooth",
+    "camera",
+    "web-app"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KLARO - Album</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="album-styles.css">
+</head>
+<body>
+    <div class="app-container album-app">
+        <header class="header">
+            <div class="header-content">
+                <a href="index.html" class="logo-link">
+                    <h1 class="logo">KLARO</h1>
+                </a>
+                <h2 class="album-title">ALBUM</h2>
+            </div>
+        </header>
+
+        <main class="album-main">
+            <div class="album-controls">
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="Search by date (MM/DD/YYYY)..."
+                        class="search-input"
+                    >
+                </div>
+
+                <div class="sort-controls">
+                    <button id="sortBtn" class="sort-button">
+                        SORT: NEWEST FIRST
+                    </button>
+                    <button id="clearBtn" class="clear-button">
+                        CLEAR ALL
+                    </button>
+                </div>
+            </div>
+
+            <div id="albumGallery" class="album-gallery">
+                <!-- Gallery items will be inserted here -->
+            </div>
+
+            <div id="emptyState" class="empty-state">
+                <div class="empty-message">NO PHOTOS YET</div>
+                <p>Create your first photobooth session by starting a session on the main page.</p>
+                <a href="index.html" class="empty-link">Go to Photobooth →</a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Photo Preview Modal -->
+    <div id="previewModal" class="preview-modal hidden">
+        <div class="preview-content">
+            <button class="close-button" id="closeModalBtn">&times;</button>
+            <div class="preview-image-container">
+                <img id="previewImage" src="" alt="Preview" class="preview-image">
+            </div>
+            <div class="preview-info">
+                <div id="previewDate" class="preview-date"></div>
+                <button id="previewDownloadBtn" class="preview-action-button download">DOWNLOAD</button>
+                <button id="previewDeleteBtn" class="preview-action-button delete">DELETE</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="utils.js"></script>
+    <script src="album.js"></script>
+</body>
+</html>
