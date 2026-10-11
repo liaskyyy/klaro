@@ -1,113 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>KLARO — Photobooth</title>
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<div id="app">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>KLARO* — Photobooth</title>
+    <meta
+      name="description"
+      content="KLARO* is a portable camera-first photobooth for live capture, strip layouts, filters, and local gallery exports."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="top-bar">
+        <div class="brand" aria-label="KLARO logo">KLARO<span>*</span></div>
+        <div class="header-actions">
+          <button id="galleryBtn" class="ghost-button" type="button">Gallery</button>
+          <button id="stripsBtn" class="ghost-button" type="button">Strips</button>
+        </div>
+      </header>
 
-  <section id="landing" class="screen active">
-    <h1 class="logo">KLARO</h1>
-    <p class="tagline">PHOTOBOOTH / PROJECT BY LIANN</p>
-    <button class="btn" id="startBtn">START</button>
-  </section>
+      <main class="camera-screen">
+        <div class="camera-stage">
+          <video id="cameraVideo" autoplay playsinline muted></video>
+          <div id="cameraCanvasWrap" class="canvas-wrap hidden"></div>
+          <div id="flashOverlay" class="flash-overlay" aria-hidden="true"></div>
+          <div id="countdownBadge" class="countdown-badge" aria-live="polite">5</div>
+          <div id="permissionMessage" class="permission-message hidden"></div>
+          <div id="cameraGrid" class="grid-overlay hidden"></div>
+          <div id="levelGuide" class="level-guide hidden"></div>
 
-  <section id="frameSelect" class="screen">
-    <p class="step-label">STEP 1</p>
-    <h2 class="title">Choose your frame</h2>
-    <div class="frame-preview" id="framePreview"><div class="fp-fill" id="fpFill"></div></div>
-    <div class="swrow">
-      <div class="swatch c-white active" data-frame="white"></div>
-      <div class="swatch c-black" data-frame="black"></div>
-      <div class="swatch c-gray" data-frame="gray"></div>
-      <div class="swatch c-red" data-frame="red"></div>
-      <div class="swatch c-blue" data-frame="blue"></div>
-      <button class="upload-swatch" id="uploadFrameBtn" title="Upload custom frame">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
-      </button>
-      <input type="file" id="frameFileInput" accept="image/png,image/jpeg,image/webp" style="display:none;">
+          <div class="tool-stack right-stack">
+            <div class="tool-wrap">
+              <button id="timerBtn" class="tool-button" type="button" aria-label="Timer">
+                <span>⏱</span>
+              </button>
+              <small id="timerLabel">5s</small>
+            </div>
+            <div class="tool-wrap">
+              <button id="flashToggleBtn" class="tool-button is-on" type="button" aria-label="Flash">
+                <span>⚡</span>
+              </button>
+              <small>Flash</small>
+            </div>
+            <div class="tool-wrap">
+              <button id="flipCameraBtn" class="tool-button" type="button" aria-label="Flip camera">
+                <span>⇄</span>
+              </button>
+              <small>Flip</small>
+            </div>
+            <div class="tool-wrap">
+              <button id="uploadBtn" class="tool-button" type="button" aria-label="Upload photo">
+                <span>↑</span>
+              </button>
+              <small>Upload</small>
+            </div>
+            <div class="tool-wrap">
+              <button id="settingsBtn" class="tool-button" type="button" aria-label="Settings">
+                <span>⋯</span>
+              </button>
+              <small>More</small>
+            </div>
+          </div>
+
+          <div class="bottom-controls">
+            <button id="galleryShortcut" class="mini-action" type="button">Recent</button>
+            <button id="captureBtn" class="capture-button" type="button" aria-label="Capture photo">
+              <span></span>
+            </button>
+            <button id="stripsShortcut" class="mini-action" type="button">Strips</button>
+          </div>
+        </div>
+      </main>
     </div>
-    <button class="btn btn-solid" id="toCameraBtn">NEXT</button>
-  </section>
 
-  <section id="camera" class="screen dark-screen">
-    <p class="dark-title" id="progress">01 / 04</p>
-    <div class="cam-stage" id="camStage">
-      <video id="video" autoplay playsinline muted></video>
-      <div class="countdown-num" id="countNum"></div>
-      <div class="icon-rail">
-        <div class="icon-wrap"><button class="icon-btn" id="switchCam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9a8 8 0 0 1 14-3M20 6v4h-4"/><path d="M20 15a8 8 0 0 1-14 3M4 18v-4h4"/></svg></button><span class="icon-lbl">FLIP</span></div>
-        <div class="icon-wrap"><button class="icon-btn on" id="flashBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></button><span class="icon-lbl" id="flashLbl">FLASH</span></div>
-        <div class="icon-wrap"><button class="icon-btn" id="timerBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></button><span class="icon-lbl" id="timerLbl">5S</span></div>
+    <input id="uploadInput" type="file" accept="image/*" hidden />
+
+    <aside id="stripsSheet" class="sheet hidden" aria-label="Photobooth strips panel">
+      <div class="sheet-header">
+        <h2>Strips</h2>
+        <button id="closeStripsBtn" class="text-button" type="button">Close</button>
       </div>
-      <p class="cam-msg" id="camMsg" style="display:none;position:absolute;inset:0;display:none;align-items:center;justify-content:center;"></p>
-    </div>
-    <div class="bottom-bar">
-      <div class="zoom-pill" id="zoomPill">
-        <button data-z="0.5">.5</button><button data-z="1" class="on">1x</button><button data-z="2">2x</button>
+
+      <section class="sheet-section">
+        <h3>Layouts</h3>
+        <div id="layoutOptions" class="option-grid"></div>
+      </section>
+
+      <section class="sheet-section">
+        <h3>Filters</h3>
+        <div id="filterOptions" class="option-grid filter-grid"></div>
+      </section>
+    </aside>
+
+    <aside id="settingsSheet" class="sheet hidden" aria-label="Camera settings panel">
+      <div class="sheet-header">
+        <h2>Settings</h2>
+        <button id="closeSettingsBtn" class="text-button" type="button">Close</button>
       </div>
-      <button class="shutter" id="shutterBtn" aria-label="Capture"></button>
-    </div>
-  </section>
 
-  <section id="photoReview" class="screen dark-screen">
-    <p class="dark-title">YOUR SHOTS</p>
-    <div class="review-stage">
-      <div class="strip-lite-wrap">
-        <canvas id="reviewStripCanvas" width="420" height="560"></canvas>
+      <div class="setting-list">
+        <label class="setting-row">
+          <span>Grid</span>
+          <input id="gridToggle" type="checkbox" />
+        </label>
+        <label class="setting-row">
+          <span>Level guide</span>
+          <input id="levelToggle" type="checkbox" />
+        </label>
+        <label class="setting-row">
+          <span>Mirror selfie</span>
+          <input id="mirrorToggle" type="checkbox" checked />
+        </label>
+        <label class="setting-row">
+          <span>Default timer</span>
+          <select id="timerSelect">
+            <option value="3">3s</option>
+            <option value="5" selected>5s</option>
+            <option value="10">10s</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>Shots</span>
+          <select id="shotsSelect">
+            <option value="2">2</option>
+            <option value="4" selected>4</option>
+            <option value="6">6</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>Interval</span>
+          <select id="intervalSelect">
+            <option value="0.5">0.5s</option>
+            <option value="1" selected>1s</option>
+            <option value="2">2s</option>
+            <option value="3">3s</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>Shutter sound</span>
+          <input id="soundToggle" type="checkbox" checked />
+        </label>
+        <label class="setting-row">
+          <span>Capture flash</span>
+          <input id="captureFlashToggle" type="checkbox" checked />
+        </label>
       </div>
-      <div class="thumb-grid" id="thumbGrid"></div>
-      <div class="right-rail">
-        <div class="icon-wrap"><button class="icon-btn" id="retakeAllBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10h8a6 6 0 1 1-5.7 8"/><path d="M4 4v6h6"/></svg></button><span class="icon-lbl">RETAKE</span></div>
-        <div class="icon-wrap"><button class="icon-btn" id="toFilterBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><span class="icon-lbl">NEXT</span></div>
+    </aside>
+
+    <aside id="galleryDrawer" class="sheet hidden" aria-label="Saved photo gallery">
+      <div class="sheet-header">
+        <h2>Gallery</h2>
+        <button id="closeGalleryBtn" class="text-button" type="button">Close</button>
+      </div>
+      <div id="galleryList" class="gallery-list"></div>
+      <button id="clearGalleryBtn" class="danger-button" type="button">Clear local gallery</button>
+    </aside>
+
+    <div id="resultSheet" class="result-sheet hidden" aria-live="polite">
+      <div class="sheet-header result-header">
+        <h2>Ready to save</h2>
+        <button id="closeResultBtn" class="text-button" type="button">Close</button>
+      </div>
+
+      <canvas id="resultCanvas" width="900" height="1500"></canvas>
+      <div id="resultThumbs" class="result-thumbs"></div>
+
+      <div class="result-actions">
+        <button id="retakeShotBtn" class="action-button" type="button">Retake</button>
+        <button id="saveResultBtn" class="action-button primary" type="button">Save</button>
+        <button id="downloadResultBtn" class="action-button" type="button">Download</button>
+        <button id="shareResultBtn" class="action-button" type="button">Share</button>
       </div>
     </div>
-  </section>
 
-  <section id="filterSelect" class="screen dark-screen">
-    <p class="dark-title">CHOOSE A FILTER</p>
-    <div class="review-stage">
-      <div class="filter-main"><canvas id="filterCanvas" width="420" height="560"></canvas></div>
-      <div class="right-rail" style="top:auto;bottom:130px;transform:none;">
-        <div class="icon-wrap"><button class="icon-btn" id="toOutputBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><span class="icon-lbl">NEXT</span></div>
-      </div>
-    </div>
-    <div class="filter-chips">
-      <button class="chip on" data-flt="normal">NORMAL</button>
-      <button class="chip" data-flt="bw">B&amp;W</button>
-      <button class="chip" data-flt="vintage">VINTAGE</button>
-    </div>
-  </section>
-
-  <section id="output" class="screen">
-    <h2 class="title">YOUR PHOTOS</h2>
-    <div class="strip-wrap"><canvas id="stripCanvas"></canvas></div>
-    <div class="share-box">
-      <img id="qrCode" src="" alt="QR share code">
-      <span>SCAN TO SHARE</span>
-    </div>
-    <div class="result-btns">
-      <button class="icon-btn-outline" id="retakeBtn2">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10h8a6 6 0 1 1-5.7 8"/><path d="M4 4v6h6"/></svg> RETAKE
-      </button>
-      <button class="icon-btn-outline" id="printBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9V3h12v6M6 18h12v3H6zM4 9h16v7H4z"/></svg> PRINT
-      </button>
-      <button class="icon-btn-outline" id="downloadBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg> PNG
-      </button>
-    </div>
-    <p class="hint" id="resultHint">2 × 6 in strip, print-ready at 300 DPI.</p>
-  </section>
-
-</div>
-<div id="flash"></div>
-<div id="printArea"><img id="printImg"></div>
-
-<script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
 
